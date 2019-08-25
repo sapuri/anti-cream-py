@@ -79,7 +79,8 @@ def censor(img: any, x1: int, y1: int, x2: int, y2: int) -> any:
 
 
 def mosaic(img: any, ratio: int = 0.1) -> any:
-    censored = cv2.resize(img, None, fx=ratio, fy=ratio, interpolation=cv2.INTER_NEAREST)
+    censored = cv2.resize(cv2.GaussianBlur(img, (25, 25), 10), None, fx=ratio, fy=ratio,
+                          interpolation=cv2.INTER_NEAREST)
     return cv2.resize(censored, img.shape[:2][::-1], interpolation=cv2.INTER_NEAREST)
 
 
