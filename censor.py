@@ -82,7 +82,7 @@ class Censor:
         return x1, y1, x2, y2
 
     @staticmethod
-    def mosaic(img: any, x1: int, y1: int, x2: int, y2: int, ratio: int = 0.1) -> any:
+    def mosaic(img: any, x1: int, y1: int, x2: int, y2: int, ratio: float = 0.1) -> any:
         vagina = img[y1:y2, x1:x2]
         censored = cv2.resize(cv2.GaussianBlur(vagina, (25, 25), 10), None, fx=ratio, fy=ratio,
                               interpolation=cv2.INTER_NEAREST)
