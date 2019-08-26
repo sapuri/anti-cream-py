@@ -9,10 +9,11 @@ from google.protobuf.json_format import MessageToDict
 
 
 class Censor:
-    def __init__(self, path: str, project_id: str, model_id: str):
+    def __init__(self, path: str, project_id: str, model_id: str, output_dir_name: str):
         self.path = path
         self.project_id = project_id
         self.model_id = model_id
+        self.output_dir_name = output_dir_name
 
     def run(self):
         path = Path(self.path)
@@ -20,13 +21,14 @@ class Censor:
             print(f'No such file or directory: \'{path}\'')
             sys.exit(1)
 
+        output_dir = path.cwd() / output_dir_name
         if path.is_file():
-            output_file_path = path.with_name(f'{path.stem}_censored{path.suffix}')
+            output_file_path = output_dir / path.name
             self.process(str(path), str(output_file_path))
             return
 
         for file in path.iterdir():
-            output_file_path = file.with_name(f'{file.stem}_censored{file.suffix}')
+            output_file_path = output_dir / file.name
             self.process(str(file), str(output_file_path))
 
     def process(self, file_path: str, output_file_path: str):
@@ -98,12 +100,15 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='AntiCreamPy: Censoring Vagina with Deep Neural Networks')
     parser.add_argument('input',
                         help='Input your original image file path. (e.g. input.jpg) If a directory is specified, all image files in that directory will be processed. (e.g. ./images)')
+    parser.add_argument('-o', '--output_dir_name', default='censored',
+                        help='Input the directory name where you want to store the processed images. (default: censored)')
 
     args = parser.parse_args()
     path = args.input
+    output_dir_name = args.output_dir_name
 
     project_id = os.getenv("PROJECT_ID")
     model_id = os.getenv("MODEL_ID")
 
-    censor = Censor(path, project_id, model_id)
+    censor = Censor(path, project_id, model_id, output_dir_name)
     censor.run()
